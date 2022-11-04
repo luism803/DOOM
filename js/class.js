@@ -151,6 +151,7 @@ class Player{
         this.dy = dUp-dDown;
         this.dx = dRight-dLeft;
         this.anguloMov = calcularAnguloPuntos(new Point(0,0),new Point(this.dx,this.dy));
+        
         var vel = calcularDistanciaPuntos(new Point(0,0), new Point(this.dx, this.dy));
         console.log(this.anguloMov)
     }
