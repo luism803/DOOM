@@ -1,7 +1,7 @@
 function onload(){
     cargarVariables();
-    puntoA = new Point(450, 120);
-    puntoB = new Point(450, 240);
+    puntoA = new Point(400, 500);
+    puntoB = new Point(420, 300);
     Pared = new Wall(puntoA, puntoB);
     Jugador = new Player(new Point(300,300));
     start();

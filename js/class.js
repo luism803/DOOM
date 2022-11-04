@@ -11,18 +11,23 @@ class Point {
 }
 
 class Wall {
-    constructor(puntoA, puntoB){
-        this.PuntoA = puntoA; 
-        this.PuntoB = puntoB;
-        this.dis = calcularDistanciaPuntos(this.PuntoA, this.PuntoB)
+    constructor(puntoA, puntoB){        //  B    D
+        this.A = puntoA;                //
+        this.B = puntoB;                //
+                                        //  C    A
+    }
+    
+    colision(P){
+        return P.x > this.A.x && P.x < this.B.x
+        &&  P.y > this.B.y && P.y < this.A.y;
     }
     
     draw(){
         this.drawViewAerea();
     }
 
-    drawViewAerea(color = 'red', width = 1) {
-        drawLine(viewAerea, this.PuntoA, this.PuntoB, color, width);
+    drawViewAerea(color = 'brown', width = 1) {
+        drawRect(viewAerea, this.A, this.B.x-this.A.x, this.A.y-this.B.y, color, width);
     }
 
     update(){
@@ -99,6 +104,7 @@ class Vision{
         this.calcularVelocidad();
         this.actualizarAngulo();
         this.draw();
+        console.log(Pared.colision(Jugador.Pos))
         //console.log(this.angulo, calcularAnguloPuntos(this.Pos,this.PuntoPared));
     }
 
