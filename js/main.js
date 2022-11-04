@@ -1,8 +1,14 @@
+var viewAerea;
+var Mapa = [];
+var Pared;
+var Jugador;
+var EsquinasMapa;
+
 function onload(){
-    cargarVariables();
     puntoA = new Point(400, 500);
     puntoB = new Point(420, 300);
     Pared = new Wall(puntoA, puntoB);
+    cargarVariables();
     Jugador = new Player(new Point(300,300));
     start();
     //update();
@@ -16,6 +22,7 @@ function cargarVariables(){
         new Point(viewAerea.width-1, viewAerea.height-1),
         new Point(0, viewAerea.height-1)
     ]
+    Mapa.push(Pared);
 }
 
 function update(){  

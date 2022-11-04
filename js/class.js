@@ -1,8 +1,3 @@
-var viewAerea;
-var Pared;
-var Jugador;
-var EsquinasMapa;
-
 class Point {
     constructor(x, y){
         this.x = x;
@@ -11,15 +6,49 @@ class Point {
 }
 
 class Wall {
-    constructor(puntoA, puntoB){        //  B    D
+    constructor(puntoA, puntoB){        //  A    D
         this.A = puntoA;                //
         this.B = puntoB;                //
-                                        //  C    A
+                                        //  C    B
     }
     
     colision(P){
-        return P.x > this.A.x && P.x < this.B.x
+        var hayColision = P.x > this.A.x && P.x < this.B.x
         &&  P.y > this.B.y && P.y < this.A.y;
+
+        var lado = null;
+        
+        if(hayColision){
+            var difArriba = this.A.y-P.y;
+            var difAbajo = P.y-this.B.y;
+            var difIzquierda = P.x-this.A.x;
+            var difDerecha = this.B.x-P.x;
+
+            if(difArriba < 0)
+                difArriba = 100;
+            if(difAbajo < 0)
+                difAbajo = 100;
+            if(difIzquierda < 0)
+                difIzquierda = 100;
+            if(difDerecha < 0)
+                difDerecha = 100;
+
+            var menor = (difArriba<difAbajo)?difArriba:difAbajo;
+            menor = (difIzquierda<menor)?difIzquierda:menor;
+            menor = (difDerecha<menor)?difDerecha:menor;
+            
+            if(menor == difArriba)
+                lado = "abajo";
+            if(menor == difAbajo)
+                lado = "arriba";
+            if(menor == difIzquierda)
+                lado = "derecha";
+            if(menor == difDerecha)
+                lado = "izquierda";
+        }
+        
+
+        return {hayColision: hayColision, lado:lado};
     }
     
     draw(){
@@ -104,7 +133,6 @@ class Vision{
         this.calcularVelocidad();
         this.actualizarAngulo();
         this.draw();
-        console.log(Pared.colision(Jugador.Pos))
         //console.log(this.angulo, calcularAnguloPuntos(this.Pos,this.PuntoPared));
     }
 
@@ -131,6 +159,75 @@ class Player{
         this.r = r;
         this.speed = speed;
         this.Vista = new Vision(this.Pos);
+        this.ladosColision = {u:false, d:false, l:false, r:false};
+    }
+
+    limpiarLadosColision(){
+        this.ladosColision = {u:false, d:false, l:false, r:false};
+    }
+
+    colisionMapa(Pos){
+        this.limpiarLadosColision();
+        for(var i=0;i<Mapa.length;i++)
+            this.colisionConObjeto(Mapa[i], Pos);
+    }
+
+    colisionConObjeto(pared, Pos){
+        var esquinaA = sumarPuntos(Pos, new Point(-this.r,-this.r));        //D      C
+        var esquinaB = sumarPuntos(Pos, new Point(this.r,-this.r));         //
+        var esquinaC = sumarPuntos(Pos, new Point(this.r,this.r));          //
+        var esquinaD = sumarPuntos(Pos, new Point(-this.r,this.r));         //A      B
+
+        var colisionA = pared.colision(esquinaA);
+        var colisionB = pared.colision(esquinaB);
+        var colisionC = pared.colision(esquinaC);
+        var colisionD = pared.colision(esquinaD);
+        
+        // if(colisionC && colisionD)
+        //     this.ladosColision.u=true;
+        
+        // if(colisionB && colisionC)
+        //     this.ladosColision.r=true;
+
+        // if(colisionA && colisionB)
+        //     this.ladosColision.d=true;
+
+        // if(colisionD && colisionA)
+        //     this.ladosColision.l=true;
+
+        if(colisionA.hayColision)
+            this.addLadosColision(colisionA.lado);
+        
+        if(colisionB.hayColision)
+            this.addLadosColision(colisionB.lado);
+
+        if(colisionC.hayColision)
+            this.addLadosColision(colisionC.lado);
+
+        if(colisionD.hayColision)
+            this.addLadosColision(colisionD.lado);
+    
+    }
+
+    addLadosColision(lado){
+        switch (lado) {
+            case "arriba":
+                this.ladosColision.u=true;
+                break;
+
+            case "abajo":
+                this.ladosColision.d=true;  
+                break;
+            case "izquierda":
+                this.ladosColision.l=true;  
+                break;
+            case "derecha":
+                this.ladosColision.r=true;  
+                break;
+        
+            default:
+                break;
+        }
     }
 
     draw(){
@@ -164,9 +261,17 @@ class Player{
             this.dy = SenAng(this.anguloMov)*this.speed;
         }
     }
+
     actualizarPos(){
-        this.Pos.x+=this.dx;
-        this.Pos.y+=this.dy;
+        var FuturaPos = new Point(this.dx+this.Pos.x,this.dy+this.Pos.y);
+        this.colisionMapa(FuturaPos);
+        console.log(this.ladosColision)
+        if(!this.hayColisiones())
+            this.Pos = FuturaPos;
+    }
+
+    hayColisiones(){
+        return this.ladosColision.u||this.ladosColision.d||this.ladosColision.l||this.ladosColision.r;
     }
 
 }
