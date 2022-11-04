@@ -22,17 +22,35 @@ function cargarVariables(){
         new Point(viewAerea.width-1, viewAerea.height-1),
         new Point(0, viewAerea.height-1)
     ]
+    crearBordes(1.51);
     Mapa.push(Pared);
+}
+
+function crearBordes(ancho = 5){
+    Borde = new Wall(new Point(0,ancho), new Point(viewAerea.width-1,0));
+    Mapa.push(Borde);
+    Borde = new Wall(new Point(0,viewAerea.height-1), new Point(ancho,0));
+    Mapa.push(Borde);
+    Borde = new Wall(new Point(0,viewAerea.height-1), new Point(viewAerea.width-1,viewAerea.height-1-ancho));
+    Mapa.push(Borde);
+    Borde = new Wall(new Point(viewAerea.width-1-ancho,viewAerea.height-1), new Point(viewAerea.width-1,0));
+    Mapa.push(Borde);
 }
 
 function update(){  
     limpiarCanvas(viewAerea);
     updateAll();
+    console.log(Mapa)
 }
 
 function updateAll(){
-    Jugador.update()
-    Pared.update()
+    Jugador.update();
+    updateMapa();
+}
+
+function updateMapa(){
+    for(i=0;i<Mapa.length;i++)
+        Mapa[i].update()
 }
 
 function start(){

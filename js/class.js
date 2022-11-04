@@ -265,9 +265,31 @@ class Player{
     actualizarPos(){
         var FuturaPos = new Point(this.dx+this.Pos.x,this.dy+this.Pos.y);
         this.colisionMapa(FuturaPos);
-        console.log(this.ladosColision)
-        if(!this.hayColisiones())
-            this.Pos = FuturaPos;
+        //console.log(this.ladosColision);
+        if(this.hayColisiones()){
+            FuturaPos = this.ajustarVelocidad();    
+        }
+        this.Pos = FuturaPos;
+    }
+
+    ajustarVelocidad(){
+        if(this.ladosColision.u){
+            if(this.dy>0)
+                this.dy = 0;
+        }
+        if(this.ladosColision.d){
+            if(this.dy<0)
+                this.dy = 0;
+        }
+        if(this.ladosColision.l){
+            if(this.dx<0)
+                this.dx = 0;
+        }
+        if(this.ladosColision.r){
+            if(this.dx>0)
+                this.dx = 0;
+        }
+        return new Point(this.dx+this.Pos.x,this.dy+this.Pos.y);
     }
 
     hayColisiones(){
