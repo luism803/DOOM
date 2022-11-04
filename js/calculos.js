@@ -80,3 +80,21 @@ function AngEntreAngs(a,b,c){
 function sumarPuntos(A, B){
     return new Point(A.x+B.x,A.y+B.y);
 }
+
+function sumarAng(A, B){
+    suma = A + B;
+    if(suma<0)
+        suma+=360;
+    if(suma>360)
+        suma-=360;
+    return suma;
+}
+
+function restarAng(A, B){
+    resta = A - B;
+    if(resta<0)
+        resta+=360;
+    if(resta>360)
+        resta-=360;
+    return resta;
+}

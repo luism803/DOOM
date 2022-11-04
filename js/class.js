@@ -151,11 +151,13 @@ class Player{
         this.dy = dUp-dDown;
         this.dx = dRight-dLeft;
         this.anguloMov = calcularAnguloPuntos(new Point(0,0),new Point(this.dx,this.dy));
-        
-        var vel = calcularDistanciaPuntos(new Point(0,0), new Point(this.dx, this.dy));
-        console.log(this.anguloMov)
+        if(this.anguloMov != null){
+            this.anguloMov = restarAng(this.anguloMov,90);
+            this.anguloMov = sumarAng(this.Vista.angulo,this.anguloMov);
+            this.dx = CosAng(this.anguloMov)*this.speed;
+            this.dy = SenAng(this.anguloMov)*this.speed;
+        }
     }
-
     actualizarPos(){
         this.Pos.x+=this.dx;
         this.Pos.y+=this.dy;
