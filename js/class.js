@@ -284,8 +284,8 @@ class Rayo{
         this.PuntoColision = puntoCheck;
         this.ladoColision = colision.lado;
         this.ParedColision = colision.Pared;
-        if(this.angulo  == this.anguloJugador)
-            console.log(this.ladoColision)
+        // if(this.angulo  == this.anguloJugador)
+        //     console.log(this.ladoColision)
     }
 
     calcularDistancia(){
@@ -302,8 +302,8 @@ class Rayo{
         var distanciaPlanoProyeccion = (view3d.width/2)/Math.tan(this.fov/2);
         var alturaMuro = (alturaMuroReal/this.d) * distanciaPlanoProyeccion;
         mitad = view3d.height/2;
-        begin = new Point(this.numero, mitad-(alturaMuro/2));
-        end = new Point(this.numero, mitad+(alturaMuro/2));
+        end = new Point(this.numero, mitad-(alturaMuro/2));
+        begin = new Point(this.numero, mitad+(alturaMuro/2));
 
         var p, lado = this.ladoColision;
 
@@ -312,15 +312,12 @@ class Rayo{
         else
             p = this.PuntoColision.x - this.ParedColision.A.x;
 
-        var alturaImg = 1024;
+        var alturaImg = 1023;
         var pImg;
-        var alturaPared = 200;
-        var resto = p % alturaMuroReal;
+        var alturaPared = 60;
+        var resto = p % alturaPared;
 
         pImg = (alturaImg*resto)/alturaPared;
-
-        (this.angulo  == this.anguloJugador)
-            console.log(pImg)
         
         ctx.imageSmoothingEnabled = false;
 
@@ -333,7 +330,7 @@ class Rayo{
             begin.x,
             begin.y,
             1,
-            begin.y-end.y
+            end.y-begin.y
         );
 
 

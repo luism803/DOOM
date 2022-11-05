@@ -33,7 +33,7 @@ function drawCircle(view, punto, r, color){
 }
 
 function dibujarFondo(view){
-    drawRect(view, new Point(0, view.height-1), view.width-1, view.height-1, "grey");
+    drawRect(view, new Point(0, view.height-1), view.width-1, view.height-1, "black");
 }
 
 function limpiarCanvas(view) {

@@ -9,8 +9,8 @@ imgMuro.src = "textures/blocks1.jpg"
 
 function onload(){
     cargarVariables();
-    //start();
-    update();
+    start();
+    //update();
 }
 
 function cargarVariables(){
@@ -25,8 +25,10 @@ function cargarVariables(){
     puntoA = new Point(400, 500);
     puntoB = new Point(420, 300);
     Pared = new Wall(puntoA, puntoB);
+    Pared1 = new Wall(new Point(50,100), new Point(150,80))
     crearBordes();
     Mapa.push(Pared);
+    Mapa.push(Pared1);
 
     Jugador = new Player(new Point(300,300));
 }
@@ -59,7 +61,7 @@ function updateAll(){
 
 function updateMapa(){
     for(i=0;i<Mapa.length;i++)
-        Mapa[i].update()
+        Mapa[i].update();
 }
 
 function start(){
