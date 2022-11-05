@@ -235,7 +235,6 @@ class Rayo{
     constructor(Pos, anguloInicial, incrementoAngulo=0){
         this.Pos = Pos;
         this.angulo = sumarAng(anguloInicial, incrementoAngulo);
-        console.log(this.angulo)
         //calcular punto de colision;
         //y distancia
         this.PuntoColision = this.calcularPuntoColision();
