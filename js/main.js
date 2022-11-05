@@ -4,11 +4,13 @@ var Mapa = [];
 var Pared;
 var Jugador;
 var EsquinasMapa;
+var imgMuro = new Image();
+imgMuro.src = "textures/blocks1.jpg"
 
 function onload(){
     cargarVariables();
-    start();
-    //update();
+    //start();
+    update();
 }
 
 function cargarVariables(){

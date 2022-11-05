@@ -50,7 +50,7 @@ class Wall {
         }
         
 
-        return {hayColision: hayColision, lado:lado};
+        return {hayColision: hayColision, lado:lado, Pared: this};
     }
     
     draw(){
@@ -67,7 +67,7 @@ class Wall {
 }
 
 class Player{
-    constructor(punto, angulo=90, fov = 60, r=5, speed = 1.5){
+    constructor(punto, angulo=90, fov = 60, r=5, speed = 2){
         this.Pos = punto;
         this.dx = 0;
         this.dy = 0;
@@ -283,6 +283,7 @@ class Rayo{
 
         this.PuntoColision = puntoCheck;
         this.ladoColision = colision.lado;
+        this.ParedColision = colision.Pared;
         if(this.angulo  == this.anguloJugador)
             console.log(this.ladoColision)
     }
@@ -295,6 +296,7 @@ class Rayo{
 
     drawView3d(){
 
+        var ctx = view3d.getContext('2d');
         var begin, end, mitad;
         var alturaMuroReal = view3d.height;
         var distanciaPlanoProyeccion = (view3d.width/2)/Math.tan(this.fov/2);
@@ -302,7 +304,41 @@ class Rayo{
         mitad = view3d.height/2;
         begin = new Point(this.numero, mitad-(alturaMuro/2));
         end = new Point(this.numero, mitad+(alturaMuro/2));
-        drawLine(view3d, begin, end, "blue");
+
+        var p, lado = this.ladoColision;
+
+        if(lado=="derecha" || lado=="izquierda")
+            p = this.ParedColision.A.y - this.PuntoColision.y;
+        else
+            p = this.PuntoColision.x - this.ParedColision.A.x;
+
+        var alturaImg = 1024;
+        var pImg;
+        var alturaPared = 200;
+        var resto = p % alturaMuroReal;
+
+        pImg = (alturaImg*resto)/alturaPared;
+
+        (this.angulo  == this.anguloJugador)
+            console.log(pImg)
+        
+        ctx.imageSmoothingEnabled = false;
+
+        ctx.drawImage(
+            imgMuro,
+            pImg,
+            0,
+            1,
+            alturaImg,
+            begin.x,
+            begin.y,
+            1,
+            begin.y-end.y
+        );
+
+
+
+        //drawLine(view3d, begin, end, "blue");
     
     }
     
