@@ -86,10 +86,10 @@ class Player{
     crearRayos(){
         var i;
         var ancho=view3d.width;
-        var incrementoAngulo = -this.fov/2;
+        var incrementoAngulo = this.fov/2;
         for(i=0;i<ancho; i++){
-            incrementoAngulo += this.fov/ancho;
-            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo)
+            incrementoAngulo -= this.fov/ancho;
+            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo, i)
         }
     }
 
@@ -252,14 +252,16 @@ class Player{
 }
 
 class Rayo{
-    constructor(Pos, angulo, incrementoAngulo=0){
+    constructor(Pos, angulo, incrementoAngulo=0, i){
         this.Pos = Pos;
+        this.anguloJugador = angulo;
         this.angulo = sumarAng(angulo, incrementoAngulo);;
         this.incrementoAngulo = incrementoAngulo;
         //calcular punto de colision;
         //y distancia
         this.PuntoColision = this.calcularPuntoColision();
-        this.d=0;
+        this.numero = i
+        this.calcularDistancia();
     }
 
     calcularPuntoColision(){
@@ -280,18 +282,36 @@ class Rayo{
         return puntoCheck;
     }
 
+    calcularDistancia(){
+        var dis;
+        dis = calcularDistanciaPuntos(this.Pos, this.PuntoColision)*CosAng(this.anguloJugador-this.angulo);
+        this.d = dis;
+    }
+
+    drawView3d(){
+        var begin, end, mitad;
+        mitad = view3d.height/2;
+        begin = new Point(this.numero, mitad-(view3d.height - this.d)/2);
+        end = new Point(this.numero, mitad+(view3d.height - this.d)/2);
+        drawLine(view3d, begin, end, "blue");
+    }
+    
     drawViewAerea(){
         drawLine(viewAerea, this.Pos, this.PuntoColision, "yellow");
     }
 
     draw(){
         this.drawViewAerea();
+        this.drawView3d();
     }
 
     update(Pos, angulo){
         this.Pos = Pos;
+        this.anguloJugador = angulo;
         this.angulo = sumarAng(angulo, this.incrementoAngulo);
         this.PuntoColision = this.calcularPuntoColision();
+        this.calcularDistancia();
+        this.calcularDistancia();
         this.draw();
     }
 }

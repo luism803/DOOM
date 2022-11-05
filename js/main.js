@@ -41,8 +41,13 @@ function crearBordes(ancho = 5){
 }
 
 function update(){  
-    limpiarCanvas(viewAerea);
+    limpiarAll();
     updateAll();
+}
+
+function limpiarAll(){
+    limpiarCanvas(viewAerea);
+    limpiarCanvas(view3d);
 }
 
 function updateAll(){

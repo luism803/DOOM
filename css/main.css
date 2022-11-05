@@ -9,7 +9,7 @@ body{
 }
 
 #View3d{
-    border: 1px solid #FFF;
+    border: 0px solid #FFF;
     height: 1280;
     width: 720;
 }
