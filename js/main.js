@@ -22,7 +22,7 @@ function cargarVariables(){
         new Point(viewAerea.width-1, viewAerea.height-1),
         new Point(0, viewAerea.height-1)
     ]
-    crearBordes(1.51);
+    crearBordes();
     Mapa.push(Pared);
 }
 
@@ -40,7 +40,6 @@ function crearBordes(ancho = 5){
 function update(){  
     limpiarCanvas(viewAerea);
     updateAll();
-    console.log(Mapa)
 }
 
 function updateAll(){
