@@ -89,7 +89,7 @@ class Player{
         var incrementoAngulo = this.fov/2;
         for(i=0;i<ancho; i++){
             incrementoAngulo -= this.fov/ancho;
-            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo, i)
+            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo, i, this.fov)
         }
     }
 
@@ -252,11 +252,12 @@ class Player{
 }
 
 class Rayo{
-    constructor(Pos, angulo, incrementoAngulo=0, i){
+    constructor(Pos, angulo, incrementoAngulo=0, i, fov){
         this.Pos = Pos;
         this.anguloJugador = angulo;
         this.angulo = sumarAng(angulo, incrementoAngulo);;
         this.incrementoAngulo = incrementoAngulo;
+        this.fov = fov;
         //calcular punto de colision;
         //y distancia
         this.calcularPuntoColision();
@@ -293,14 +294,16 @@ class Rayo{
     }
 
     drawView3d(){
-        var begin, end, mitad, x, angulo;
-        var alturaMuro = 200;
-        angulo = calcularAnguloPuntos(new Point(0,0), new Point(this.d,alturaMuro/2))
-        x = angulo/60
+
+        var begin, end, mitad;
+        var alturaMuroReal = view3d.height;
+        var distanciaPlanoProyeccion = (view3d.width/2)/Math.tan(this.fov/2);
+        var alturaMuro = (alturaMuroReal/this.d) * distanciaPlanoProyeccion;
         mitad = view3d.height/2;
-        begin = new Point(this.numero, mitad-(view3d.height * x)/2);
-        end = new Point(this.numero, mitad+(view3d.height * x)/2);
+        begin = new Point(this.numero, mitad-(alturaMuro/2));
+        end = new Point(this.numero, mitad+(alturaMuro/2));
         drawLine(view3d, begin, end, "blue");
+    
     }
     
     drawViewAerea(){
