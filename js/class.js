@@ -259,7 +259,7 @@ class Rayo{
         this.incrementoAngulo = incrementoAngulo;
         //calcular punto de colision;
         //y distancia
-        this.PuntoColision = this.calcularPuntoColision();
+        this.calcularPuntoColision();
         this.numero = i
         this.calcularDistancia();
     }
@@ -271,7 +271,7 @@ class Rayo{
         do{
             puntoCheck = new Point(x*CosAng(this.angulo)+this.Pos.x  ,   x*SenAng(this.angulo)+this.Pos.y);
             for(var i=0;i<Mapa.length;i++){
-                colision = Mapa[i].colision(puntoCheck, true)
+                colision = Mapa[i].colision(puntoCheck)
                 if(colision.hayColision){     //SI HAY COLISION CON UNA PARED
                     hayColision = true;
                     break;
@@ -279,7 +279,11 @@ class Rayo{
             }
             x++;
         }while(!hayColision);
-        return puntoCheck;
+
+        this.PuntoColision = puntoCheck;
+        this.ladoColision = colision.lado;
+        if(this.angulo  == this.anguloJugador)
+            console.log(this.ladoColision)
     }
 
     calcularDistancia(){
@@ -289,10 +293,13 @@ class Rayo{
     }
 
     drawView3d(){
-        var begin, end, mitad;
+        var begin, end, mitad, x, angulo;
+        var alturaMuro = 200;
+        angulo = calcularAnguloPuntos(new Point(0,0), new Point(this.d,alturaMuro/2))
+        x = angulo/60
         mitad = view3d.height/2;
-        begin = new Point(this.numero, mitad-(view3d.height - this.d)/2);
-        end = new Point(this.numero, mitad+(view3d.height - this.d)/2);
+        begin = new Point(this.numero, mitad-(view3d.height * x)/2);
+        end = new Point(this.numero, mitad+(view3d.height * x)/2);
         drawLine(view3d, begin, end, "blue");
     }
     
@@ -309,7 +316,7 @@ class Rayo{
         this.Pos = Pos;
         this.anguloJugador = angulo;
         this.angulo = sumarAng(angulo, this.incrementoAngulo);
-        this.PuntoColision = this.calcularPuntoColision();
+        this.calcularPuntoColision();
         this.calcularDistancia();
         this.calcularDistancia();
         this.draw();
