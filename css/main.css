@@ -2,12 +2,6 @@ body{
     background-color: dimgray;
 }
 
-#View2d{
-    border: 0px solid #FFF;
-    height: 400;
-    width: 1000;
-}
-
 #ViewAerea{
     border: 0px solid #FFF;
     height: 600;
@@ -15,7 +9,7 @@ body{
 }
 
 #View3d{
-    border: 0px solid #FFF;
-    height: 400;
-    width: 600;
+    border: 1px solid #FFF;
+    height: 1280;
+    width: 720;
 }

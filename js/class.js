@@ -67,7 +67,7 @@ class Wall {
 }
 
 class Player{
-    constructor(punto, angulo=90, r=5, speed = 1.5){
+    constructor(punto, angulo=90, fov = 60, r=5, speed = 1.5){
         this.Pos = punto;
         this.dx = 0;
         this.dy = 0;
@@ -76,7 +76,27 @@ class Player{
         this.ladosColision = {u:false, d:false, l:false, r:false};
         this.angulo = angulo;
         this.dangulo;
-        this.Rayo = new Rayo(this.Pos, this.angulo);
+        this.fov = fov;
+        this.Rayos = [];
+        this.crearRayos();
+        //console.log(this.Rayos)
+        //new Rayo(this.Pos, this.angulo);
+    }
+
+    crearRayos(){
+        var i;
+        var ancho=view3d.width;
+        var incrementoAngulo = -this.fov/2;
+        for(i=0;i<ancho; i++){
+            incrementoAngulo += this.fov/ancho;
+            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo)
+        }
+    }
+
+    actualizarRayos(){
+        for(var i=0; i<this.Rayos.length;  i++){
+            this.Rayos[i].update(this.Pos, this.angulo);
+        } 
     }
 
     limpiarLadosColision(){
@@ -147,23 +167,6 @@ class Player{
         }
     }
 
-    draw(){
-        this.drawViewAerea();
-    }
-
-    drawViewAerea(color = 'black') {
-        drawCircle(viewAerea, this.Pos, this.r, color);
-    }
-
-    update(){
-        this.calcularVelocidad();
-        this.actualizarPos();
-        this.calcularVelocidadAngular();
-        this.actualizarAngulo();
-        this.Rayo.update(this.Pos, this.angulo);
-        this.draw();
-    }
-
     calcularVelocidad(){
 
         var dUp = (Controles.up)?1:0;
@@ -229,12 +232,30 @@ class Player{
         return this.ladosColision.u||this.ladosColision.d||this.ladosColision.l||this.ladosColision.r;
     }
 
+    draw(){
+        this.drawViewAerea();
+    }
+
+    drawViewAerea(color = 'black') {
+        drawCircle(viewAerea, this.Pos, this.r, color);
+    }
+
+    update(){
+        this.calcularVelocidad();
+        this.actualizarPos();
+        this.calcularVelocidadAngular();
+        this.actualizarAngulo();
+        this.actualizarRayos(this.Pos, this.angulo);
+        this.draw();
+    }
+
 }
 
 class Rayo{
-    constructor(Pos, anguloInicial, incrementoAngulo=0){
+    constructor(Pos, angulo, incrementoAngulo=0){
         this.Pos = Pos;
-        this.angulo = sumarAng(anguloInicial, incrementoAngulo);
+        this.angulo = sumarAng(angulo, incrementoAngulo);;
+        this.incrementoAngulo = incrementoAngulo;
         //calcular punto de colision;
         //y distancia
         this.PuntoColision = this.calcularPuntoColision();
@@ -267,9 +288,9 @@ class Rayo{
         this.drawViewAerea();
     }
 
-    update(Pos, anguloInicial, incrementoAngulo=0){
+    update(Pos, angulo){
         this.Pos = Pos;
-        this.angulo = sumarAng(anguloInicial, incrementoAngulo);
+        this.angulo = sumarAng(angulo, this.incrementoAngulo);
         this.PuntoColision = this.calcularPuntoColision();
         this.draw();
     }
