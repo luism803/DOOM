@@ -1,21 +1,18 @@
-var viewAerea;
+var viewAerea, view3d;
 var Mapa = [];
 var Pared;
 var Jugador;
 var EsquinasMapa;
 
 function onload(){
-    puntoA = new Point(400, 500);
-    puntoB = new Point(420, 300);
-    Pared = new Wall(puntoA, puntoB);
-    cargarVariables();
-    Jugador = new Player(new Point(300,300));
     start();
     //update();
 }
 
 function cargarVariables(){
     viewAerea = document.getElementById('ViewAerea');
+    view3d = document.getElementById('View3d');
+    Jugador = new Player(new Point(300,300));
     EsquinasMapa = [
         new Point(0,0),
         new Point(viewAerea.width-1, 0),
@@ -23,6 +20,9 @@ function cargarVariables(){
         new Point(0, viewAerea.height-1)
     ]
     crearBordes();
+    puntoA = new Point(400, 500);
+    puntoB = new Point(420, 300);
+    Pared = new Wall(puntoA, puntoB);
     Mapa.push(Pared);
 }
 
@@ -53,6 +53,8 @@ function updateMapa(){
 }
 
 function start(){
+    cargarVariables();
+
     // number of frames per second
     let framePerSecond = 50;
 
