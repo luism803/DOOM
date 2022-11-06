@@ -247,8 +247,8 @@ class Player{
         this.actualizarPos();
         this.calcularVelocidadAngular();
         this.actualizarAngulo();
-        drawRect(view3d, new Point(0, view3d.height), view3d.width, view3d.height/2, "cyan");
-        drawRect(view3d, new Point(0, view3d.height/2), view3d.width, view3d.height/2, "green");
+        drawRect(view3d, new Point(0, view3d.height), view3d.width, view3d.height/2, "DarkBlue");
+        drawRect(view3d, new Point(0, view3d.height/2), view3d.width, view3d.height/2, "DarkGreen");
         this.actualizarRayos(this.Pos, this.angulo);
         this.draw();
     }
@@ -285,23 +285,23 @@ class Rayo{
                     break;
                 }
             }
-            x+=2;
+            x+=1;
         }while(!hayColision);
 
-        x-=2*2;
-        hayColision = false;
+        // x-=2*2;
+        // hayColision = false;
 
-        do{
-            puntoCheck = new Point(x*CosAng(this.angulo)+this.Pos.x  ,   x*SenAng(this.angulo)+this.Pos.y);
-            for(var i=0;i<Mapa.length;i++){
-                colision = Mapa[i].colision(puntoCheck)
-                if(colision.hayColision){     //SI HAY COLISION CON UNA PARED
-                    hayColision = true;
-                    break;
-                }
-            }
-            x+=0.5;
-        }while(!hayColision);
+        // do{
+        //     puntoCheck = new Point(x*CosAng(this.angulo)+this.Pos.x  ,   x*SenAng(this.angulo)+this.Pos.y);
+        //     for(var i=0;i<Mapa.length;i++){
+        //         colision = Mapa[i].colision(puntoCheck)
+        //         if(colision.hayColision){     //SI HAY COLISION CON UNA PARED
+        //             hayColision = true;
+        //             break;
+        //         }
+        //     }
+        //     x+=0.5;
+        // }while(!hayColision);
 
         this.PuntoColision = puntoCheck;
         this.ladoColision = colision.lado;
