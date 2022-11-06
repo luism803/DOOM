@@ -51,7 +51,7 @@ function update(){
 
 function limpiarAll(){
     limpiarCanvas(viewAerea);
-    limpiarCanvas(view3d);
+    limpiarCanvas(view3d, "black");
 }
 
 function updateAll(){

@@ -32,12 +32,12 @@ function drawCircle(view, punto, r, color){
     ctx.fill();
 }
 
-function dibujarFondo(view){
-    drawRect(view, new Point(0, view.height-1), view.width-1, view.height-1, "black");
+function dibujarFondo(view, color = "grey"){
+    drawRect(view, new Point(0, view.height-1), view.width-1, view.height-1, color);
 }
 
-function limpiarCanvas(view) {
+function limpiarCanvas(view, color = "grey") {
     ctx = view.getContext('2d');
     ctx.clearRect(0, 0, view.width, view.height);
-    dibujarFondo(view);
+    dibujarFondo(view, color);
 }

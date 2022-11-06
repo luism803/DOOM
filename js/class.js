@@ -266,6 +266,8 @@ class Rayo{
     }
 
     calcularPuntoColision(){
+        //se puede mejorar con algoritmo
+
         var hayColision = false;
         var x=2, puntoCheck;
         var colision;
@@ -278,7 +280,7 @@ class Rayo{
                     break;
                 }
             }
-            x++;
+            x+=1;
         }while(!hayColision);
 
         this.PuntoColision = puntoCheck;
@@ -312,7 +314,7 @@ class Rayo{
         else
             p = this.PuntoColision.x - this.ParedColision.A.x;
 
-        var alturaImg = 1023;
+        var alturaImg = imgMuro.naturalWidth-1;
         var pImg;
         var alturaPared = 60;
         var resto = p % alturaPared;
