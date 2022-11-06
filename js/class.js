@@ -73,6 +73,7 @@ class Player{
         this.dy = 0;
         this.r = r;
         this.speed = speed;
+        this.normalSpeed = speed;
         this.ladosColision = {u:false, d:false, l:false, r:false};
         this.angulo = angulo;
         this.dangulo;
@@ -172,7 +173,8 @@ class Player{
         var dUp = (Controles.up)?1:0;
         var dLeft = (Controles.left)?1:0;
         var dDown = (Controles.down)?1:0;
-        var dRight = (Controles.right)?1:0; 
+        var dRight = (Controles.right)?1:0;
+        this.speed = (Controles.shift)?this.normalSpeed*1.5:this.normalSpeed;
         this.dy = dUp-dDown;
         this.dx = dRight-dLeft;
         this.anguloMov = calcularAnguloPuntos(new Point(0,0),new Point(this.dx,this.dy));
@@ -245,6 +247,8 @@ class Player{
         this.actualizarPos();
         this.calcularVelocidadAngular();
         this.actualizarAngulo();
+        drawRect(view3d, new Point(0, view3d.height), view3d.width, view3d.height/2, "cyan");
+        drawRect(view3d, new Point(0, view3d.height/2), view3d.width, view3d.height/2, "green");
         this.actualizarRayos(this.Pos, this.angulo);
         this.draw();
     }
@@ -271,6 +275,7 @@ class Rayo{
         var hayColision = false;
         var x=2, puntoCheck;
         var colision;
+
         do{
             puntoCheck = new Point(x*CosAng(this.angulo)+this.Pos.x  ,   x*SenAng(this.angulo)+this.Pos.y);
             for(var i=0;i<Mapa.length;i++){
@@ -280,7 +285,22 @@ class Rayo{
                     break;
                 }
             }
-            x+=1;
+            x+=2;
+        }while(!hayColision);
+
+        x-=2*2;
+        hayColision = false;
+
+        do{
+            puntoCheck = new Point(x*CosAng(this.angulo)+this.Pos.x  ,   x*SenAng(this.angulo)+this.Pos.y);
+            for(var i=0;i<Mapa.length;i++){
+                colision = Mapa[i].colision(puntoCheck)
+                if(colision.hayColision){     //SI HAY COLISION CON UNA PARED
+                    hayColision = true;
+                    break;
+                }
+            }
+            x+=0.5;
         }while(!hayColision);
 
         this.PuntoColision = puntoCheck;

@@ -5,7 +5,7 @@ var Pared;
 var Jugador;
 var EsquinasMapa;
 var imgMuro = new Image();
-imgMuro.src = "textures/blocks1.jpg"
+imgMuro.src = "textures/wall.png"
 
 function onload(){
     cargarVariables();
