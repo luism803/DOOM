@@ -421,8 +421,8 @@ class Rayo{
         }
         
         this.PuntoColision = puntos[n].Punto;
-        this.ladoColision = colision.lado;
-        this.ParedColision = colision.Pared;
+        this.ladoColision = puntos[n].lado;
+        this.ParedColision = puntos[n].Pared;
     }
 
     calcularPuntoColision(){
@@ -474,7 +474,7 @@ class Rayo{
 
     drawView3d(){
 
-        // var ctx = view3d.getContext('2d');
+        var ctx = view3d.getContext('2d');
         var begin, end, mitad;
         var alturaMuroReal = view3d.height;
         var distanciaPlanoProyeccion = (view3d.width/2)/Math.tan(this.fov/2);
@@ -483,37 +483,37 @@ class Rayo{
         end = new Point(this.numero, mitad-(alturaMuro/2));
         begin = new Point(this.numero, mitad+(alturaMuro/2));
 
-        // var p, lado = this.ladoColision;
+        var p, lado = this.ladoColision;
 
-        // if(lado=="derecha" || lado=="izquierda")
-        //     p = this.ParedColision.A.y - this.PuntoColision.y;
-        // else
-        //     p = this.PuntoColision.x - this.ParedColision.A.x;
+        if(lado=="derecha" || lado=="izquierda")
+            p = this.ParedColision.A.y - this.PuntoColision.y;
+        else
+            p = this.PuntoColision.x - this.ParedColision.A.x;
 
-        // var alturaImg = imgMuro.naturalWidth-1;
-        // var pImg;
-        // var alturaPared = 60;
-        // var resto = p % alturaPared;
+        var alturaImg = imgMuro.naturalWidth-1;
+        var pImg;
+        var alturaPared = 60;
+        var resto = p % alturaPared;
 
-        // pImg = (alturaImg*resto)/alturaPared;
+        pImg = (alturaImg*resto)/alturaPared;
         
-        // ctx.imageSmoothingEnabled = false;
+        ctx.imageSmoothingEnabled = false;
 
-        // ctx.drawImage(
-        //     imgMuro,
-        //     pImg,
-        //     0,
-        //     1,
-        //     alturaImg,
-        //     begin.x,
-        //     begin.y,
-        //     1,
-        //     end.y-begin.y
-        // );
+        ctx.drawImage(
+            imgMuro,
+            pImg,
+            0,
+            1,
+            alturaImg,
+            begin.x,
+            begin.y,
+            1,
+            end.y-begin.y
+        );
 
 
 
-        drawLine(view3d, begin, end, "red");
+        //drawLine(view3d, begin, end, "red");
     
     }
     
