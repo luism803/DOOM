@@ -5,13 +5,43 @@ class Point {
     }
 }
 
+class Recta {
+    constructor(Punto, angulo){
+        this.Punto = Punto;
+        this.angulo = angulo;
+    }
+}
+
 class Wall {
     constructor(puntoA, puntoB){        //  A    D
         this.A = puntoA;                //
         this.B = puntoB;                //
-                                        //  C    B
+        this.calcularLados();           //  C    B
+    }
+
+    calcularLados(){
+        this.ladoIzquierda();
+        this.ladoDerecha();
+        this.ladoArriba();
+        this.ladoAbajo();
     }
     
+    ladoIzquierda(){
+        this.LadoIzquierda = {A:this.A ,B:new Point(this.A.x, this.B.y)};
+    }
+
+    ladoDerecha(){
+        this.LadoDerecha = {A:new Point(this.B.x,this.A.y) ,B:this.B};
+    }
+
+    ladoArriba(){
+        this.LadoArriba = {A:this.A ,B:new Point(this.B.x, this.A.y)};
+    }
+
+    ladoAbajo(){
+        this.LadoAbajo = {A:new Point(this.A.x, this.B.y) ,B:this.B};
+    }
+
     colision(P, rayo = false){
         var hayColision = P.x > this.A.x && P.x < this.B.x
         &&  P.y > this.B.y && P.y < this.A.y;
@@ -49,8 +79,98 @@ class Wall {
                 lado = "izquierda";
         }
         
-
         return {hayColision: hayColision, lado:lado, Pared: this};
+    }
+
+    colisionRecta(Punto, angulo){
+
+        var PuntoColision = false;
+        var dis = null;
+        var lado = null;
+
+        //diferenciar hacia donde miro (angulo) saber que lado mirar si hay colision
+        if(angulo == 0 || angulo == 360){
+            if(this.LadoIzquierda.A.y >= Punto.y && this.LadoIzquierda.B.y <= Punto.y && Punto.x < this.LadoIzquierda.A.x)
+                PuntoColision = new Point(this.LadoIzquierda.A.x,Punto.y);
+                lado = "izquierda";
+        }else if(angulo == 180){
+            if(this.LadoDerecha.A.y >= Punto.y && this.LadoDerecha.B.y <= Punto.y && Punto.x > this.LadoDerecha.A.x)
+                PuntoColision = new Point(this.LadoDerecha.A.x,Punto.y);
+                lado = "derecha";
+        }else if(angulo == 90){
+            if(this.LadoAbajo.A.x <= Punto.x && this.LadoAbajo.B.x >= Punto.x && Punto.y < this.LadoAbajo.A.y)
+                PuntoColision = new Point(Punto.x, this.LadoAbajo.A.y);
+                lado = "abajo";
+        }else if(angulo == 270){
+            if(this.LadoArriba.A.x <= Punto.x && this.LadoArriba.B.x >= Punto.x && Punto.y > this.LadoArriba.A.y)
+                PuntoColision = new Point(Punto.x, this.LadoArriba.A.y);
+                lado = "arriba";
+        }
+
+        //funcion de una recta con angulo => y=(sen(a)/cos(a))x
+        else if(angulo > 0 && angulo < 90){     // MIRANDO ARRIBA DERECHA
+            if(Punto.x < this.A.x || Punto.y < this.B.y){
+                var a = Punto.y-TanAng(angulo)*Punto.x;
+                var x = (this.LadoAbajo.A.y-a)/TanAng(angulo);                          //pared abajo
+                var y = (this.LadoIzquierda.A.x*TanAng(angulo)+a);                      //pared izquierda
+                if(this.LadoIzquierda.A.y >= y && this.LadoIzquierda.B.y <= y){   //CALCULAR PARED IZQUIERDA
+                    PuntoColision = new Point(this.LadoIzquierda.A.x, y);
+                    lado = "izquierda";
+                }else if(this.LadoAbajo.A.x <= x && this.LadoAbajo.B.x >= x){   //CALCULAR PARED ABAJO
+                    PuntoColision = new Point(x, this.LadoAbajo.A.y);
+                    lado = "abajo";
+                }
+            }
+
+        }else if(angulo > 90 && angulo < 180){  //MIRANDO ARRIBA IZQUIERDA
+            if(Punto.x > this.B.x || Punto.y < this.B.y){
+                var a = Punto.y-TanAng(angulo)*Punto.x;
+                var x = (this.LadoAbajo.A.y-a)/TanAng(angulo);                          //pared abajo
+                var y = (this.LadoDerecha.A.x*TanAng(angulo)+a);                      //pared derecha
+                if(this.LadoDerecha.A.y >= y && this.LadoDerecha.B.y <= y){   //CALCULAR PARED DERECHA
+                    PuntoColision = new Point(this.LadoDerecha.A.x, y);
+                    lado = "derecha";
+                }else if(this.LadoAbajo.A.x <= x && this.LadoAbajo.B.x >= x){   //CALCULAR PARED ABAJO
+                    PuntoColision = new Point(x, this.LadoAbajo.A.y);
+                    lado = "abajo";
+                }
+            }
+        
+        }else if(angulo > 180 && angulo < 270){  //MIRANDO ABAJO DERECHA
+            if(Punto.x > this.B.x || Punto.y > this.A.y){
+                var a = Punto.y-TanAng(angulo)*Punto.x;
+                var x = (this.LadoArriba.A.y-a)/TanAng(angulo);                          //pared arriba
+                var y = (this.LadoDerecha.A.x*TanAng(angulo)+a);                      //pared derecha
+                if(this.LadoDerecha.A.y >= y && this.LadoDerecha.B.y <= y){   //CALCULAR PARED DERECHA
+                    PuntoColision = new Point(this.LadoDerecha.A.x, y);
+                    lado = "derecha";
+                }else if(this.LadoArriba.A.x <= x && this.LadoArriba.B.x >= x){   //CALCULAR PARED ARRIBA
+                    PuntoColision = new Point(x, this.LadoArriba.A.y);
+                    lado = "arriba";
+                }
+            }
+
+        }else if(angulo > 270 && angulo < 360){  //MIRANDO ABAJO DERECHA
+            if(Punto.x < this.A.x || Punto.y > this.A.y){
+                var a = Punto.y-TanAng(angulo)*Punto.x;
+                var x = (this.LadoArriba.A.y-a)/TanAng(angulo);                          //pared arriba
+                var y = (this.LadoIzquierda.A.x*TanAng(angulo)+a);                      //pared izquierda
+                if(this.LadoIzquierda.A.y >= y && this.LadoIzquierda.B.y <= y){   //CALCULAR PARED IZQUIERDA
+                    PuntoColision = new Point(this.LadoIzquierda.A.x, y);
+                    lado = "izquierda";
+                }else if(this.LadoArriba.A.x <= x && this.LadoArriba.B.x >= x){   //CALCULAR PARED ARRIBA
+                    PuntoColision = new Point(x, this.LadoArriba.A.y);
+                    lado = "arriba";
+                }
+            }
+
+        }
+
+        //calcular punto interseccion
+        if(PuntoColision)
+            dis = calcularDistanciaPuntos(Punto, PuntoColision)
+
+        return {Punto: PuntoColision, dis: dis, lado: lado, Pared: this}
     }
     
     draw(){
@@ -58,7 +178,11 @@ class Wall {
     }
 
     drawViewAerea(color = 'brown', width = 1) {
-        drawRect(viewAerea, this.A, this.B.x-this.A.x, this.A.y-this.B.y, color, width);
+        //drawRect(viewAerea, this.A, this.B.x-this.A.x, this.A.y-this.B.y, color, width);
+        drawLine(viewAerea, this.LadoDerecha.A, this.LadoDerecha.B);
+        drawLine(viewAerea, this.LadoIzquierda.A, this.LadoIzquierda.B);
+        drawLine(viewAerea, this.LadoAbajo.A, this.LadoAbajo.B);
+        drawLine(viewAerea, this.LadoArriba.A, this.LadoArriba.B);
     }
 
     update(){
@@ -67,7 +191,7 @@ class Wall {
 }
 
 class Player{
-    constructor(punto, angulo=90, fov = 60, r=5, speed = 2){
+    constructor(punto, angulo=0, fov = 60, r=5, speed = 2){
         this.Pos = punto;
         this.dx = 0;
         this.dy = 0;
@@ -90,7 +214,7 @@ class Player{
         var incrementoAngulo = this.fov/2;
         for(i=0;i<ancho; i++){
             incrementoAngulo -= this.fov/ancho;
-            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo, i, this.fov)
+            this.Rayos[i]=new Rayo(this.Pos, this.angulo, incrementoAngulo, i, this.fov);
         }
     }
 
@@ -189,8 +313,14 @@ class Player{
     actualizarPos(){
         var FuturaPos = new Point(this.dx+this.Pos.x,this.dy+this.Pos.y);
         this.colisionMapa(FuturaPos);
+        var colisionFuturaPos = this.hayColisiones();
+
+        var MitadFuturaPos = new Point(this.dx*0.5+this.Pos.x,this.dy*0.5+this.Pos.y);
+        this.colisionMapa(MitadFuturaPos);
+        var colisionMitadFuturaPos = this.hayColisiones();
+        
         //console.log(this.ladosColision);
-        if(this.hayColisiones()){
+        if(colisionFuturaPos || colisionMitadFuturaPos){
             FuturaPos = this.ajustarVelocidad();    
         }
         this.Pos = FuturaPos;
@@ -217,8 +347,8 @@ class Player{
     }
 
     calcularVelocidadAngular(){
-        var dLeft = (Controles.arrowLeft)?this.speed:0;
-        var dRight = (Controles.arrowRight)?this.speed:0; 
+        var dLeft = (Controles.arrowLeft)?this.normalSpeed:0;
+        var dRight = (Controles.arrowRight)?this.normalSpeed:0; 
         this.dangulo = dLeft-dRight;
     }
 
@@ -264,9 +394,35 @@ class Rayo{
         this.fov = fov;
         //calcular punto de colision;
         //y distancia
-        this.calcularPuntoColision();
+        //this.calcularPuntoColision();
+        this.calcularPuntoColisionRecta();
         this.numero = i
         this.calcularDistancia();
+    }
+
+    calcularPuntoColisionRecta(){
+        var colision;
+        var puntos = [];
+
+        for(var i=0;i<Mapa.length;i++){
+            colision = Mapa[i].colisionRecta(this.Pos, this.angulo);
+            if(colision.Punto){     //SI HAY COLISION CON UNA PARED
+                puntos.push(colision);
+            }
+        }
+
+        var min = puntos[0].dis;
+        var n=0;       
+        for(var i=0; i<puntos.length;i++){
+            if(min>puntos[i].dis){
+                n = i;
+                min = puntos[i].dis
+            }
+        }
+        
+        this.PuntoColision = puntos[n].Punto;
+        this.ladoColision = colision.lado;
+        this.ParedColision = colision.Pared;
     }
 
     calcularPuntoColision(){
@@ -318,7 +474,7 @@ class Rayo{
 
     drawView3d(){
 
-        var ctx = view3d.getContext('2d');
+        // var ctx = view3d.getContext('2d');
         var begin, end, mitad;
         var alturaMuroReal = view3d.height;
         var distanciaPlanoProyeccion = (view3d.width/2)/Math.tan(this.fov/2);
@@ -327,37 +483,37 @@ class Rayo{
         end = new Point(this.numero, mitad-(alturaMuro/2));
         begin = new Point(this.numero, mitad+(alturaMuro/2));
 
-        var p, lado = this.ladoColision;
+        // var p, lado = this.ladoColision;
 
-        if(lado=="derecha" || lado=="izquierda")
-            p = this.ParedColision.A.y - this.PuntoColision.y;
-        else
-            p = this.PuntoColision.x - this.ParedColision.A.x;
+        // if(lado=="derecha" || lado=="izquierda")
+        //     p = this.ParedColision.A.y - this.PuntoColision.y;
+        // else
+        //     p = this.PuntoColision.x - this.ParedColision.A.x;
 
-        var alturaImg = imgMuro.naturalWidth-1;
-        var pImg;
-        var alturaPared = 60;
-        var resto = p % alturaPared;
+        // var alturaImg = imgMuro.naturalWidth-1;
+        // var pImg;
+        // var alturaPared = 60;
+        // var resto = p % alturaPared;
 
-        pImg = (alturaImg*resto)/alturaPared;
+        // pImg = (alturaImg*resto)/alturaPared;
         
-        ctx.imageSmoothingEnabled = false;
+        // ctx.imageSmoothingEnabled = false;
 
-        ctx.drawImage(
-            imgMuro,
-            pImg,
-            0,
-            1,
-            alturaImg,
-            begin.x,
-            begin.y,
-            1,
-            end.y-begin.y
-        );
+        // ctx.drawImage(
+        //     imgMuro,
+        //     pImg,
+        //     0,
+        //     1,
+        //     alturaImg,
+        //     begin.x,
+        //     begin.y,
+        //     1,
+        //     end.y-begin.y
+        // );
 
 
 
-        //drawLine(view3d, begin, end, "blue");
+        drawLine(view3d, begin, end, "red");
     
     }
     
@@ -374,13 +530,13 @@ class Rayo{
         this.Pos = Pos;
         this.anguloJugador = angulo;
         this.angulo = sumarAng(angulo, this.incrementoAngulo);
-        this.calcularPuntoColision();
+        //this.calcularPuntoColision();
+        this.calcularPuntoColisionRecta();
         this.calcularDistancia();
         this.calcularDistancia();
         this.draw();
     }
 }
-
 
 
 

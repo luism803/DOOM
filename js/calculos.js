@@ -58,6 +58,10 @@ function CosAng(angulo){
     return Math.cos(AngToRad(angulo));
 }
 
+function TanAng(angulo){
+    return Math.tan(AngToRad(angulo));
+}
+
 function diferenciaAng(a,b){
     dif=a-b;
     dif = Math.abs(dif);
